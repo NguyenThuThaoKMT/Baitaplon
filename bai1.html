@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn ô trên bảng</title>
+</head>
+<body>
+    <h1>Một bảng gồm 5 hàng và 4 cột. Bạn muốn chọn 2 ô trên bảng đó. Có bao nhiêu cách chọn?</h1>
+    <button onclick="calculateCombinations()">Tính số cách chọn</button>
+    <div id="result"></div>
+
+    <script>
+        function calculateCombinations() {
+            const rows = 5; // Số hàng
+            const columns = 4; // Số cột
+
+            // Tính số cách chọn 2 ô trên bảng
+            const combinations = (rows * columns) * (rows * columns - 1) / 2;
+
+            // Hiển thị kết quả
+            const resultElement = document.getElementById("result");
+            resultElement.textContent = "Số cách chọn 2 ô trên bảng là : " + combinations;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài toán cho thuê máy</title>
+</head>
+<body>
+    <h1>Bài toán cho thuê máy: Một ông chủ có một cái máy để cho thuê. Đầu tháng ông ta nhận được 
+        yêu cầu thuê máy của m khách hàng. Mỗi khách hàng i sẽ cho biết tập N, các ngày trong tháng 
+        cần sử dụng máy (i = 1, 2,..., m). Ông chủ chỉ có quyền hoặc là từ chối yêu cầu của khách hàng i, 
+        hoặc là nếu nhận thì phải bố trí máy phục vụ khách hàng i đúng những ngày mà khách hàng này 
+        yêu cầu. Hỏi rằng ông chủ phải tiếp nhận các yêu cầu của khách như thế nào để cho tổng số
+        ngày sử dụng máy là lớn nhất.</h1>
+    <button onclick="maxDaysRented()">Tìm số ngày cho thuê tối đa</button>
+    <div id="result"></div> <!-- Thêm div để hiển thị kết quả -->
+
+    <script>
+        function maxDaysRented() {
+            const m = parseInt(prompt("Nhập số lượng khách hàng:"));
+            const requests = [];
+            for (let i = 0; i < m; i++) {
+                const n = parseInt(prompt(`Nhập số lượng ngày yêu cầu của khách hàng ${i + 1}:`));
+                const request = [];
+                for (let j = 0; j < n; j++) {
+                    const day = parseInt(prompt(`Nhập ngày thứ ${j + 1} khách hàng ${i + 1} muốn thuê (từ 1 đến 30):`));
+                    request.push(day);
+                }
+                requests.push(request);
+            }
+
+            let maxRentedDays = 0;
+
+            function backtrack(idx, rentedDays) {
+                if (idx === m) {
+                    maxRentedDays = Math.max(maxRentedDays, rentedDays);
+                    return;
+                }
+
+                // Thử chấp nhận yêu cầu của khách hàng
+                let validRequest = true;
+                for (let day of requests[idx]) {
+                    if (days[day] === 1) {
+                        validRequest = false;
+                        break;
+                    }
+                }
+
+                if (validRequest) {
+                    for (let day of requests[idx]) {
+                        days[day] = 1;
+                    }
+                    backtrack(idx + 1, rentedDays + requests[idx].length);
+                    for (let day of requests[idx]) {
+                        days[day] = 0;
+                    }
+                }
+
+                // Thử từ chối yêu cầu của khách hàng
+                backtrack(idx + 1, rentedDays);
+            }
+
+            const days = new Array(31).fill(0); // Mảng lưu trữ các ngày đã được thuê, 0 là chưa thuê, 1 là đã thuê
+            backtrack(0, 0);
+
+            const resultElement = document.getElementById("result");
+            resultElement.innerHTML = "<h2>Tổng số ngày thuê tối đa:</h2>" + maxRentedDays;
+        }
+    </script>
+</body>
+</html>

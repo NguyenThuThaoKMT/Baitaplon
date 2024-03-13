@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xếp quân hậu</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            border: 1px solid rgb(189, 226, 88);
+        }
+        .queen {
+            background-color: #98db1a;
+        }
+    </style>
+</head>
+<body>
+    <h1>. Hãy tìm 1 cách xếp 10 quân hậu vào bàn cờ 10 x 10, sao cho không có quân hậu nào ăn được 
+        nhau.</h1>
+    <button onclick="displayQueens()">Giải</button>
+    <table id="chessboard"></table>
+
+    <script>
+        // Hàm kiểm tra xem ô (row, col) có thể đặt quân hậu không
+        function canPlaceQueen(board, row, col) {
+            // Kiểm tra hàng và cột
+            for (let i = 0; i < col; i++) {
+                if (board[row][i]) {
+                    return false;
+                }
+            }
+
+            // Kiểm tra đường chéo trên bên trái
+            for (let i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+                if (board[i][j]) {
+                    return false;
+                }
+            }
+
+            // Kiểm tra đường chéo dưới bên trái
+            for (let i = row, j = col; j >= 0 && i < 10; i++, j--) {
+                if (board[i][j]) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // Hàm giải quyết bài toán xếp quân hậu
+        function solveQueensUtil(board, col) {
+            // Nếu đã xếp quân hậu vào tất cả các cột, trả về true
+            if (col >= 10) {
+                return true;
+            }
+
+            // Đặt quân hậu cho mỗi hàng trong cột hiện tại
+            for (let i = 0; i < 10; i++) {
+                if (canPlaceQueen(board, i, col)) {
+                    board[i][col] = 1; // Đặt quân hậu
+
+                    // Nếu đặt quân hậu ở hàng i, và giải quyết vấn đề cho các cột còn lại, trả về true
+                    if (solveQueensUtil(board, col + 1)) {
+                        return true;
+                    }
+
+                    // Nếu không tìm được vị trí hợp lệ cho quân hậu tiếp theo, thì loại bỏ quân hậu này và thử lại
+                    board[i][col] = 0; // Đánh dấu ô cờ trống
+                }
+            }
+
+            // Nếu không thể đặt quân hậu trong bất kỳ hàng nào, trả về false
+            return false;
+        }
+
+        // Hàm xếp quân hậu và hiển thị trên bàn cờ
+        function displayQueens() {
+            let board = Array(10).fill().map(() => Array(10).fill(0)); // Tạo bàn cờ 10x10 với tất cả các ô là ô cờ trống
+            solveQueensUtil(board, 0); // Giải quyết bài toán xếp quân hậu
+
+            // Hiển thị bàn cờ và quân hậu
+            const chessboard = document.getElementById("chessboard");
+            chessboard.innerHTML = ""; // Xóa nội dung trước đó của bàn cờ
+            for (let i = 0; i < 10; i++) {
+                const row = document.createElement("tr");
+                for (let j = 0; j < 10; j++) {
+                    const cell = document.createElement("td");
+                    if (board[i][j] === 1) {
+                        cell.classList.add("queen");
+                    }
+                    row.appendChild(cell);
+                }
+                chessboard.appendChild(row);
+            }
+        }
+    </script>
+</body>
+</html>

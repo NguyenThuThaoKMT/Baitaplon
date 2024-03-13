@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>thuật toán BFS</title>
+</head>
+<body>
+    <h1>Ví dụ về giải 1 đồ thị có 6 đỉnh sử dụng thuật toán BFS:</h1>
+    <label for="dinh">Nhập đỉnh xuất phát</label> </label>
+    <input type="text" id="dinh" placeholder="Nhập đỉnh">
+    <button onclick="runBFS()">Chạy BFS</button>
+    <div id="result"></div> <!-- Thêm div để hiển thị kết quả -->
+
+    <script>
+        // Định nghĩa đồ thị bằng danh sách kề
+        const graph = {
+            'A': ['B', 'C'],
+            'B': ['A', 'D', 'E'],
+            'C': ['A', 'F'],
+            'D': ['B'],
+            'E': ['B', 'F'],
+            'F': ['C', 'E']
+        };
+
+        // Hàm BFS
+        function BFS(startNode) {
+            const visited = {}; // Đánh dấu các đỉnh đã thăm
+            const queue = [startNode]; // Queue để duyệt đồ thị
+
+            const result = []; // Mảng chứa kết quả
+
+            while (queue.length > 0) {
+                const currentNode = queue.shift(); // Lấy đỉnh đầu tiên ra khỏi queue
+                if (!visited[currentNode]) {
+                    visited[currentNode] = true; // Đánh dấu đỉnh đã thăm
+                    result.push(currentNode); // Thêm đỉnh vào kết quả
+
+                    // Duyệt qua tất cả các đỉnh kề của đỉnh hiện tại
+                    const neighbors = graph[currentNode];
+                    for (let i = 0; i < neighbors.length; i++) {
+                        const neighbor = neighbors[i];
+                        if (!visited[neighbor]) {
+                            queue.push(neighbor); // Thêm đỉnh kề chưa thăm vào queue
+                        }
+                    }
+                }
+            }
+
+            return result; // Trả về kết quả của BFS
+        }
+
+        // Hàm chạy BFS khi nhấn nút "Run BFS"
+        function runBFS() {
+            const startNode = prompt("Nhập đỉnh bắt đầu:");
+            const result = BFS(startNode);
+            const resultElement = document.getElementById("result");
+            resultElement.innerHTML = "<h2>Kết quả BFS:</h2>" + result.join(" -> ");
+        }
+    </script>
+</body>
+</html>

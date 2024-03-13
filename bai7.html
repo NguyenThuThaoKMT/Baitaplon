@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floyd Algorithm Result</title>
+    <style>
+        /* CSS styles go here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="number"] {
+            width: 50px;
+            text-align: center;
+        }
+        button {
+            display: block;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- HTML content goes here -->
+    <h1>Thuật toán Floyd</h1>
+
+    <div id="inputForm">
+        <label for="size">Nhập số luợng đỉnh::</label>
+        <input type="number" id="size" min="1" required>
+        <button onclick="createMatrix()">Tạo ma trận</button>
+    </div>
+
+    <div id="matrixInput" style="display: none;">
+        <h2>Nhập trọng số cho ma trận :</h2>
+        <table id="inputTable">
+            <!-- JavaScript will populate this table -->
+        </table>
+        <button onclick="runFloyd()">Chạy thuật toán Floyd</button>
+    </div>
+
+    <h2>Các con đường ngắn nhất :</h2>
+    <table id="resultTable" style="display: none;">
+        <!-- JavaScript will populate this table -->
+    </table>
+
+    <script>
+        // JavaScript code goes here
+        let matrixSize;
+        let adjacencyMatrix;
+        let shortestPaths;
+
+        function createMatrix() {
+            const size = parseInt(document.getElementById('size').value);
+            if (size > 0) {
+                matrixSize = size;
+                adjacencyMatrix = Array.from({ length: matrixSize }, () => Array.from({ length: matrixSize }, () => Infinity));
+
+                const inputForm = document.getElementById('inputForm');
+                inputForm.style.display = 'none';
+
+                const matrixInput = document.getElementById('matrixInput');
+                matrixInput.style.display = 'block';
+
+                const inputTable = document.getElementById('inputTable');
+                inputTable.innerHTML = '';
+
+                for (let i = 0; i < matrixSize; i++) {
+                    const row = document.createElement('tr');
+                    for (let j = 0; j < matrixSize; j++) {
+                        const cell = document.createElement('td');
+                        const input = document.createElement('input');
+                        input.type = 'number';
+                        input.min = 0;
+                        input.style.width = '50px';
+                        input.style.textAlign = 'center';
+                        cell.appendChild(input);
+                        row.appendChild(cell);
+                    }
+                    inputTable.appendChild(row);
+                }
+            } else {
+                alert('Hãy nhập số lượng đỉnh phù hợp!( số lượng đỉnh phải lớn hơn hoặc bằng 1)');
+            }
+        }
+
+        function runFloyd() {
+            adjacencyMatrix = [];
+            const inputRows = document.querySelectorAll('#inputTable tr');
+            inputRows.forEach(row => {
+                const rowData = [];
+                const inputs = row.querySelectorAll('input');
+                inputs.forEach(input => {
+                    rowData.push(parseInt(input.value));
+                });
+                adjacencyMatrix.push(rowData);
+            });
+
+            shortestPaths = floydWarshall(adjacencyMatrix);
+
+            displayResult();
+        }
+
+        function displayResult() {
+            const resultTable = document.getElementById('resultTable');
+            resultTable.innerHTML = '';
+
+            const thead = document.createElement('thead');
+            const headRow = document.createElement('tr');
+            headRow.innerHTML = '<th></th>';
+            for (let i = 0; i < matrixSize; i++) {
+                const th = document.createElement('th');
+                th.textContent = `Đỉnh ${i + 1}`;
+                headRow.appendChild(th);
+            }
+            thead.appendChild(headRow);
+            resultTable.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            for (let i = 0; i < matrixSize; i++) {
+                const row = document.createElement('tr');
+                const headerCell = document.createElement('th');
+                headerCell.textContent = `Vertex ${i + 1}`;
+                row.appendChild(headerCell);
+                for (let j = 0; j < matrixSize; j++) {
+                    const cell = document.createElement('td');
+                    cell.textContent = shortestPaths[i][j] === Infinity ? '∞' : shortestPaths[i][j];
+                    row.appendChild(cell);
+                }
+                tbody.appendChild(row);
+            }
+            resultTable.appendChild(tbody);
+
+            resultTable.style.display = 'block';
+        }
+
+        function floydWarshall(graph) {
+            const n = graph.length;
+            const dist = Array.from({ length: n }, () => Array.from({ length: n }, () => Infinity));
+
+            // Khởi tạo ma trận khoảng cách ban đầu
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n; j++) {
+                    if (i === j) {
+                        dist[i][j] = 0; // Khoảng cách từ một đỉnh đến chính nó là 0
+                    } else if (graph[i][j] !== 0) {
+                        dist[i][j] = graph[i][j]; // Cập nhật khoảng cách từ i đến j nếu có cạnh nối
+                    }
+                }
+            }
+
+            // Áp dụng thuật toán Floyd
+            for (let k = 0; k < n; k++) {
+                for (let i = 0; i < n; i++) {
+                    for (let j = 0; j < n; j++) {
+                        if (dist[i][k] !== Infinity && dist[k][j] !== Infinity && dist[i][k] + dist[k][j] < dist[i][j]) {
+                            dist[i][j] = dist[i][k] + dist[k][j];
+                        }
+                    }
+                }
+            }
+
+            return dist;
+        }
+    </script>
+</body>
+</html>

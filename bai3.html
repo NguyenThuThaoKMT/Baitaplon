@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liệt kê các cặp số</title>
+</head>
+<body>
+    <h1> Liệt kê tất cả các cách chọn 2 số từ tập hợp {1, 2, 3, 4}.</h1>
+    <button onclick="lietkecaccapso()">Liệt kê</button>
+    <div id="result"></div> <!-- Thêm div để hiển thị kết quả -->
+
+    <script>
+        function lietkecaccapso() {
+            const numbers = [1, 2, 3, 4];
+            const resultElement = document.getElementById("result");
+            resultElement.innerHTML = "<h2>Các cặp số trong tập hợp {1, 2, 3, 4} là : </h2>";
+
+            // Sử dụng forEach để duyệt qua mỗi số và tạo cặp với các số còn lại
+            numbers.forEach((number1, index) => {
+                numbers.slice(index + 1).forEach((number2) => {
+                    const pair = "(" + number1 + ", " + number2 + ")";
+                    resultElement.innerHTML += pair + "<br>";
+                });
+            });
+        }
+    </script>
+</body>
+</html>
